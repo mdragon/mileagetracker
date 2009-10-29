@@ -233,7 +233,7 @@ function redraw(target, myOptions, series, limitYAxis)
 	
 	//target.unbind("plotselected");
 	plot = $.plot(target,series, myOptions);
-	plot.clearSelection();
+	//plot.clearSelection();
 	//target.bind("plotselected", function(event, ranges) { zoom(event, ranges, plot); });
 	
 	groupEnd();
