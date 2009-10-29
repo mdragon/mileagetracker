@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Mileage Report{% endblock %}
+
+{% block content %}
+<div style="margin-top: 5px; float: left; clear: left">
+    <div id="graph-mpg" style="width: 1090px; height: 300px; margin-left: 10px;"></div>
+    <div id="graph-cpg" style="width: 1100px; height: 300px;"></div>
+</div>
+
+<div>
+     <div style="float: left; clear: none; margin-left: 20px;">
+        {% if admin %}
+        <a href="/edit/"><img src="/images/add.png"/> Add</a>
+        {% endif %}
+
+        <h3>Stats</h3>
+        <table>
+            <tr><td>Avg. MPG:</td><td class="number">{{ avgMPG|floatformat:3 }}</td></tr>
+            <tr><td>Avg. $PG:</td><td class="number">$ {{ avgCPG|floatformat:3 }}</td></tr>
+        </table>
+    </div>
+    <div style="float: left; clear: right; margin-left: 20px;">
+        <h3>Detailed Entries ({{ entries.count }})</h3>
+
+        <table>
+            <tr><th>Date</th><th>MPG</th><th>$PG</th><th>Miles</th><th>Gallons</th><th>Cost</th></tr>
+        {% for entry in entries reversed %}
+            <tr class="{% cycle odd,even %}">
+                <td>
+                    {% if admin %}
+                    <a href="edit/?key={{ entry.key }}">
+                    {% endif %}
+                        {{ entry.date|date:"m/d/y" }}
+                    {% if admin %}
+                    </a>
+                    {% endif %}
+                </td>
+                <td class="number">{{ entry.mpg|floatformat:3 }}</td>
+                <td class="number">{{ entry.cpg|floatformat:3 }}</td>
+                <td class="number">{{ entry.miles }}</td>
+                <td class="number">{{ entry.gallons }}</td>
+                <td class="number">$ {{ entry.cost|floatformat:2 }}</td>
+                {% if admin %}
+                <td><a href="/edit/delete?key={{ entry.key }}"><img src="/images/delete.png"/></a></td>
+                {% endif %}
+            </tr>
+           
+        {% endfor %}
+        </table>
+    </div>
+    <div style="float: left; clear: both;"></div>
+</div>
+<div style="float: left; clear: left; margin-top: 20px;">
+    <div id="graph-miles" style="width: 1100px; height: 600px;"></div>
+</div>
+
+
+<div id="data-mpg" style="display: none;">
+    !,MPG, Avg
+    {% for entry in entries %}
+        {{ entry.jstime }}, {{ entry.mpg|floatformat:3 }},  {{ avgMPG|floatformat:3 }} 
+    {% endfor %}
+</div>
+<div id="data-cpg" style="display: none;">
+    !,$PG, Avg
+    {% for entry in entries %}
+        {{ entry.jstime  }}, {{ entry.cpg|floatformat:3 }}, {{ avgCPG|floatformat:3 }} 
+    {% endfor %}
+</div>
+<div id="data-miles" style="display: none;">
+    !,Driven, Lease
+    {% for entry in miles %}
+        {{ entry.jstime  }}, {{ entry.miles|default_if_none:"" }}, {{ entry.lease|default_if_none:"" }}
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+<html>
+<head>
+    <link rel="stylesheet" href="css/main.css" />
+    <title>{% block title %}Mileage{% endblock %}</title>
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.png"/>
+    <style>
+        img { border: 0px; vertical-align: middle;}
+        body, tr, td{ font-family: verdana; font-size: 10pt; }
+    </style>
+</head>
+
+<body>
+    <div style="text-align: right; float: right; clear: right;">{% if user %} <a href="{{ logout_link }}">Logout</a> {% else %} <a href="{{ login_link }}">Login</a> {% endif %}</div>
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
+
+<script src="/js/libraries/jquery.js" type="text/javascript"></script>    
+<script type="text/javascript" src="js/libraries/jquery.flot.js"></script>
+<script type="text/javascript" src="js/flot.helper.js"></script>
+<script type="text/javascript" src="js/logging.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript">
+    $(document).ready(init);
+</script>

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Mileage{% endblock %}
+
+{% block content %}
+<a href="/">Back to Report</a> | <a href="/edit/"><img src="/images/add.png"/> New</a>
+<form method="post" action="/edit/mileage">
+    <input type="hidden" name="key" value="{{ key|default_if_none:"" }}"/>
+    Date/Time: <input name="date" value="{{ entry.date|default_if_none:""  }}"/> <br/>
+    Gallons: <input name="gallons" value="{{ entry.gallons|default_if_none:"" }}"/>  <br/>
+    Cost: <input name="cost" value="{{ entry.cost|default_if_none:"" }}"/> <br/>
+    Miles: <input name="miles" value="{{ entry.miles|default_if_none:"" }}"/> <br/>
+    Location: <input name="location" value="{{ entry.location|default_if_none:"" }}"/> <br/>
+    <input type="submit" value="Save"/>
+</form>
+{% endblock %}
