@@ -16,6 +16,7 @@ class Main(webapp.RequestHandler):
     
     last = None
     anychange = False
+    calcMPG = 0.0
     avgMPG = 0.0
     avgCPG = 0.0
     totalGallons = 0.0
@@ -32,8 +33,9 @@ class Main(webapp.RequestHandler):
             change = True
 
         if last != None:
-            if e.mpg == None:
-                e.mpg = e.calc_mpg(last)
+            calcMPG = e.calc_mpg(last)
+            if e.mpg != calcMPG:
+                e.mpg = calcMPG
                 change = True
         else:
             if e.mpg != 0.0:
@@ -55,7 +57,7 @@ class Main(webapp.RequestHandler):
     if anychange:
         entries = models.Entry.all()
         entries.order("date")
-
+    
     if totalMPG == 0:
         avgMPG = 0
         avgCPG = 0
@@ -66,7 +68,7 @@ class Main(webapp.RequestHandler):
     for m in miles:
         m['jstime'] = jstime(m['date'])
     miles.sort()
-        
+
     template_values = {
       'entries': entries,
       'avgMPG': avgMPG,
