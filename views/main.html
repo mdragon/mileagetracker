@@ -6,8 +6,8 @@
 <div style="margin-top: 5px; float: left; clear: left">
     <div id="graph-mpg" style="width: 1090px; height: 300px; margin-left: 10px;"></div>
     <div id="graph-cpg" style="width: 1100px; height: 300px;"></div>
+    <div id="graph-miles" style="width: 1100px; height: 600px; margin-top: 20px"></div>
 </div>
-
 <div>
      <div style="float: left; clear: none; margin-left: 20px;">
         {% if admin %}
@@ -38,7 +38,7 @@
                 </td>
                 <td class="number">{{ entry.mpg|floatformat:3 }}</td>
                 <td class="number">{{ entry.cpg|floatformat:3 }}</td>
-                <td class="number">{{ entry.miles }}</td>
+                <td class="number">{% if entry.estimate or entry.location == "00000" %}*{% endif %}{{ entry.miles }}</td>
                 <td class="number">{{ entry.gallons }}</td>
                 <td class="number">$ {{ entry.cost|floatformat:2 }}</td>
                 {% if admin %}
@@ -50,9 +50,6 @@
         </table>
     </div>
     <div style="float: left; clear: both;"></div>
-</div>
-<div style="float: left; clear: left; margin-top: 20px;">
-    <div id="graph-miles" style="width: 1100px; height: 600px;"></div>
 </div>
 
 <div id="data-mpg" style="display: none;">

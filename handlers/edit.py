@@ -2,13 +2,13 @@ import os
 import datetime
 from google.appengine.api import users
 from google.appengine.ext import db
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
+
+import webapp2
 
 import models
 
-class Edit(webapp.RequestHandler):
+class Edit(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         key = self.request.get('key')
@@ -27,6 +27,7 @@ class Edit(webapp.RequestHandler):
 
         if entry.is_saved():
             key = entry.key()
+            entry.prettyDate = entry.date.strftime('%m/%d/%y')
         else:
             key = ""
     
@@ -61,6 +62,7 @@ class Edit(webapp.RequestHandler):
         entry.gallons = float(self.request.get('gallons'))
         entry.cost = float(self.request.get('cost'))
         entry.miles = int(self.request.get('miles'))
+        entry.estimate = (self.request.get('estimate') == 'checked')
         entry.location = self.request.get('location')
         entry.cpg = entry.calc_cpg()
         entry.mpg = None
@@ -73,7 +75,7 @@ class Edit(webapp.RequestHandler):
         #self.response.out.write(path)
         #self.response.out.write(template.render(path, template_values))
         
-class Delete(webapp.RequestHandler):
+class Delete(webapp2.RequestHandler):
     def get(self):
         if users.is_current_user_admin() == False:
             self.redirect("/")
@@ -88,14 +90,8 @@ class Delete(webapp.RequestHandler):
             
         self.redirect("/?delete")
     
-application = webapp.WSGIApplication(
+editApp = webapp2.WSGIApplication(
                                      [('/edit/delete', Delete),
                                      ('/edit/.*', Edit),
                                      ],
                                      debug=True)
-
-def main():
-    run_wsgi_app(application)
-
-if __name__ == "__main__":
-    main()

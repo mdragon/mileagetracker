@@ -7,6 +7,8 @@ class Entry(db.Model):
     gallons = db.FloatProperty()
     cost = db.FloatProperty()
     entered = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    estimate = db.BooleanProperty()
     location = db.StringProperty()
     mpg = db.FloatProperty()
     cpg = db.FloatProperty()

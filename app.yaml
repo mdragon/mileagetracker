@@ -1,8 +1,11 @@
-﻿application: trackmileage
+﻿application: trackmileagehr
 version: 1
-runtime: python
+runtime: python27
+threadsafe: true
 api_version: 1
 
+#builtins:
+#- remote_api: on
 
 handlers:
 - url: /css
@@ -12,6 +15,6 @@ handlers:
 - url: /images
   static_dir: images
 - url: /edit/.*
-  script: handlers/edit.py
+  script: handlers.edit.editApp
 - url: /.*
-  script: handlers/view.py
+  script: handlers.view.mainApp
