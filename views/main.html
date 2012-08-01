@@ -15,12 +15,14 @@
         {% endif %}
 
         <h3>Stats</h3>
+        Car: {{ car.name }}
         <table>
             <tr><td>Avg. MPG:</td><td class="number">{{ avgMPG|floatformat:3 }}</td></tr>
             <tr><td>Avg. $PG:</td><td class="number">$ {{ avgCPG|floatformat:3 }}</td></tr>
         </table>
     </div>
-    <div style="float: left; clear: right; margin-left: 20px;">
+	<div style="float: left; clear: right; margin-left: 20px;">
+
         <h3>Detailed Entries ({{ entries.count }})</h3>
 
         <table>

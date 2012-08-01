@@ -1,10 +1,11 @@
-import os
 import datetime
+import logging
+import os
+import webapp2
+
 from google.appengine.api import users
 from google.appengine.ext import db
 from google.appengine.ext.webapp import template
-
-import webapp2
 
 import models
 
@@ -67,6 +68,8 @@ class Edit(webapp2.RequestHandler):
         entry.cpg = entry.calc_cpg()
         entry.mpg = None
 
+        car = models.Car.all().filter('default = ', True).fetch(1)[0]
+        entry.car = car
         db.put(entry)
         key = str(entry.key())
 
@@ -90,8 +93,44 @@ class Delete(webapp2.RequestHandler):
             
         self.redirect("/?delete")
     
+class Migration1(webapp2.RequestHandler):
+    def get(self):
+        if len(models.Car().all().fetch(999)) > 0:
+            logging.debug('skipping migration there are already Cars in the datastore')
+            return
+        
+        c = models.Car()
+        c.name = '09 Civic'
+        c.make = 'Honda'
+        c.model = 'Civic'
+        c.year = '2009'
+        c.leaseStart = datetime.datetime.strptime('2009-08-01','%Y-%m-%d').date()
+        c.leaseEnd = datetime.datetime.strptime('2012-06-29','%Y-%m-%d').date()
+        
+        c.put()
+        
+        entries = models.Entry.all()
+        es = entries.fetch(999)
+        logging.debug('setting car on ' + str(len(es)) + ' entities')
+        for e in es:
+            e.car = c
+            e.put()
+        
+        c = models.Car()
+        c.name = '12 Accord'
+        c.make = 'Honda'
+        c.model = 'Accord'
+        c.year = '2012'
+        c.startingMiles = 105
+        c.leaseStart = datetime.datetime.strptime('2012-06-29','%Y-%m-%d').date()
+        c.leaseEnd = datetime.datetime.strptime('2015-06-29','%Y-%m-%d').date()
+        c.default = True
+        
+        c.put()
+        
 editApp = webapp2.WSGIApplication(
                                      [('/edit/delete', Delete),
+                                     ('/edit/migration1', Migration1),
                                      ('/edit/.*', Edit),
                                      ],
                                      debug=True)
