@@ -69,15 +69,15 @@
 </div>
 
 <div id="data-mpg" style="display: none;">
-    !,MPG, Avg
+    !,MPG, Avg, Med
     {% for entry in entries %}
-        {{ entry.jstime }}, {% if entry.mpg %} {{ entry.mpg|floatformat:3 }} {% endif %},  {{ avgMPG|floatformat:3 }} 
+        {{ entry.jstime }}, {% if entry.mpg %} {{ entry.mpg|floatformat:3 }} {% endif %},  {{ avgMPG|floatformat:3 }}, {{ medMPG|floatformat:3}}
     {% endfor %}
 </div>
 <div id="data-cpg" style="display: none;">
-    !,$PG, Avg
+    !,$PG, Avg, Med
     {% for entry in entries %}
-        {{ entry.jstime  }}, {{ entry.cpg|floatformat:3 }}, {{ avgCPG|floatformat:3 }} 
+        {{ entry.jstime  }}, {{ entry.cpg|floatformat:3 }}, {{ avgCPG|floatformat:3 }}, {{ medCPG|floatformat:3}}
     {% endfor %}
 </div>
 <div id="data-miles" style="display: none;">

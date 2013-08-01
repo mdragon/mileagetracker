@@ -13,7 +13,7 @@ function setupPlot(container, plotdata, legend, time, timeformat, points, xaxis,
 	}
 	
 	container = $(container);
-	log("container", container);
+	console.log("container", container);
 	
 	series = buildSeries(plotdata, legend);
 	
@@ -82,74 +82,96 @@ function setupPlot(container, plotdata, legend, time, timeformat, points, xaxis,
 		yaxis: yaxis
     };
 	
-    plot = redraw(container, options, series);
+    plot = redraw(container, options, series, false);
 	
 	return plot;
 }
 
 function buildSeries(plotdata, legend)
 {
-	group("buildSeries");
+	console.group("buildSeries");
 	var series = [];
-	for(x=1; x < plotdata.length; x++)
+	for(var x=0; x < plotdata.length; x++)
 	{
-		series[x-1] = { label: legend[x],	data: plotdata[x] };
+		series[x] = { label: legend[x],	data: plotdata[x] };
 	}
 	
 	if( seriesOptions !== undefined && seriesOptions !== null )
 	{
-		log(series);
-		log("extending series with options", seriesOptions);
+		console.log(series);
+		console.log("extending series with options", seriesOptions);
 		for(var x = 0; x < seriesOptions.length; x++)
 		{
 			series[x] = $.extend(true, {}, series[x], seriesOptions[x]);
 		}
 		//series = $.merge(series, seriesOptions);
-		log(series);
-		log(series[0]);
+		console.log(series);
+		console.log(series[0]);
 	}
 	
-	groupEnd();
+	console.groupEnd();
 	return series;
 }
 
 function parseData(data, plotdata, legend)
 {
-	pointnum = 0;
-	lines = data.split("\n");
+	var pointnum = 0;
+	var lines = data.split("\n");
+
+	// empty out data from prior charts
+	plotdata.length = 0;
+	legend.length = 0;
+
+	console.log('after reset', JSON.stringify(plotdata));
 	
-	for(linenum = 0; linenum < lines.length; linenum++)
+	for(var linenum = 0; linenum < lines.length; linenum++)
 	{
-		line = $.trim(lines[linenum]);
+		var line = $.trim(lines[linenum]);
+
 		if( line.charAt(0) == "!" )
 		{
-			cols = line.split(",");
+			console.log('header', line);
+			var cols = line.split(",");
 
-			for(x = 1; x < cols.length; x++)
+			for(var x = 1; x < cols.length; x++)
 			{
-				legend[x] = cols[x];
+				var series = x-1;
+				legend[series] = cols[x];
 			}
+
+			console.log(JSON.stringify(legend));
 		} 
 		else if( line.charAt(0) != "#" && $.trim(line).length != 0)
 		{
+			console.log('line', line);
+	
 			// not a comment
-			cols = line.split(",");
+			var cols = line.split(",");
+
+			console.log('cols', JSON.stringify(cols));
 			
-			for(x = 0; x < cols.length; x++)
+			// start with the second col cause the first is the x component
+			for(var x = 1; x < cols.length; x++)
 			{
-				if(plotdata[x] == undefined || plotdata[x] == null)
+				var series = x-1;
+				if(plotdata[series] == undefined || plotdata[series] == null)
 				{
-					plotdata[x] = [];
+					plotdata[series] = [];
 				}
 
 				if(  $.trim(cols[x]) == "" )
 				{
-					plotdata[x][pointnum] = [$.trim(cols[0]), null];
+					console.log('x, val, cols[0]', x, null, cols[0]);
+					plotdata[series][pointnum] = [$.trim(cols[0]), null];
 				} else
 				{
-					plotdata[x][pointnum] = [$.trim(cols[0]), $.trim(cols[x])];
+					console.log('x, val, cols[0]', x, cols[x], cols[0]);
+					plotdata[series][pointnum] = [$.trim(cols[0]), $.trim(cols[x])];
 				}
 			}
+
+			console.log('plotdata', plotdata, JSON.stringify(plotdata));
+
 			pointnum++;
 		}
 	}
@@ -159,17 +181,17 @@ function zoomEvent(event, ranges, plot)
 {
 	var axes, target;
 	group("zoomEvent");
-	log("plot", plot);
+	console.log("plot", plot);
 	axes = plot.getAxes()
-	log("axes", axes);
+	console.log("axes", axes);
 	target = $(event.target)
-	log("target", target);
-	log("event", event);
-	log("ranges", ranges);
+	console.log("target", target);
+	console.log("event", event);
+	console.log("ranges", ranges);
 	
 	if( ranges == undefined || ranges == null || ranges.xaxis == undefined || ranges.xaxis == null )
 	{
-		log("bad ranges, not redrawing");
+		console.log("bad ranges, not redrawing");
 	} else
 	{
 		var myOptions = $.extend(true, {}, options, 
@@ -203,8 +225,8 @@ function redraw(target, myOptions, series, limitYAxis)
 	}
 	
 	group("redraw");
-	log("target", target);
-	log("myOptions", myOptions);
+	console.log("target", target);
+	console.log("myOptions", myOptions);
 
 		
 	if( series === undefined || series === null ) 
@@ -215,13 +237,13 @@ function redraw(target, myOptions, series, limitYAxis)
 	
 	if( limitYAxis )
 	{
-		log("y", myOptions["yaxis"], myOptions["yaxis"].length);
+		console.log("y", myOptions["yaxis"], myOptions["yaxis"].length);
 		if( myOptions["yaxis"] === null || myOptions["yaxis"]["max"] === undefined )
 		{
 			var max = findSecondBiggest(series, 2); // this rules #'s are in the last series
 			if( max == 0 )
 			{
-				log("bad max found, not using");
+				console.log("bad max found, not using");
 			} else
 			{
 				myOptions["yaxis"] = {max: max};

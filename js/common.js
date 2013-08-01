@@ -17,13 +17,13 @@ function init()
 
 function buildGraphs()
 {
-    data = $("div#data-mpg");
+    var data = $("div#data-mpg");
     if( data.length != 0 )
     {
         parseData($(data[0]).text(), plotdata, legend);
 
-        log("plotdata", plotdata);
-        log("legend", legend);
+        console.log("plotdata", JSON.stringify(plotdata));
+        console.log("legend", JSON.stringify(legend));
 
         plot = setupPlot($("#graph-mpg")[0], plotdata, legend, null, null, false);
     }
@@ -33,8 +33,8 @@ function buildGraphs()
     {
         parseData($(data[0]).text(), plotdata, legend);
 
-        log("plotdata", plotdata);
-        log("legend", legend);
+        console.log("plotdata", JSON.stringify(plotdata));
+        console.log("legend", JSON.stringify(legend));
 
         plot = setupPlot($("#graph-cpg")[0], plotdata, legend, null, null, false);
     }
@@ -44,8 +44,8 @@ function buildGraphs()
     {
         parseData($(data[0]).text(), plotdata, legend);
 
-        log("plotdata", plotdata);
-        log("legend", legend);
+        console.log("plotdata", JSON.stringify(plotdata));
+        console.log("legend", JSON.stringify(legend));
 
         plot = setupPlot($("#graph-miles")[0], plotdata, legend, null, null, false);
     }
