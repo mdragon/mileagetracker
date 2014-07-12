@@ -11,6 +11,12 @@ import models
 
 
 class Main(webapp2.RequestHandler):
+    def loadEntries(self, car):
+        entries = models.Entry.all().filter('car = ', car)
+        entries.order("date")
+
+        return entries
+    
     def get(self):
         if 'car' in self.request.arguments():
             cars = models.Car.get(self.request.get('car'))
@@ -126,36 +132,28 @@ class Main(webapp2.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), '../views/main.html')
         self.response.out.write(template.render(path, template_values))
 
-
-def loadEntries(self, car):
-    entries = models.Entry.all().filter('car = ', car)
-    entries.order("date")
-
-    return entries
-
-
 def jstime(date):
-    d3 = date - datetime.datetime(1970, 1, 1).date()
-    return ((d3.days * 86400000000) + (d3.seconds + 1000000) + d3.microseconds)/1000
+	d3 = date - datetime.datetime(1970, 1, 1).date()
+	return ((d3.days * 86400000000) + (d3.seconds + 1000000) + d3.microseconds)/1000
 
 
 def getLease(date, start):
-    d3 = date - start
-    return 36000/(3*365) * d3.days
+	d3 = date - start
+	return 36000/(3*365) * d3.days
 
 
 def median(data):
-    dlen = len(data)
-    val = 0
+	dlen = len(data)
+	val = 0
 
-    if dlen > 0:
-        if dlen % 2 == 0:
-            sum = data[dlen/2-1] + data[dlen/2]
-            val = sum/2
-        else:
-            val = data[dlen/2]
+	if dlen > 0:
+		if dlen % 2 == 0:
+			sum = data[dlen/2-1] + data[dlen/2]
+			val = sum/2
+		else:
+			val = data[dlen/2]
 
-    return val
+	return val
 
 mainApp = webapp2.WSGIApplication(
     [('/', Main)],
